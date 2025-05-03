@@ -10,10 +10,12 @@ def check_file(filename):
     except FileExistsError:
         pass
 
+
 def crush_program(reason):
     """Function terminates the program when an error occurs."""
     raise SystemExit(f"Error: {reason}")
     
+
 def parse_input(users_input):
     """Function splits a string into parts, taking into account spaces and quotation marks."""
     parts = []
@@ -45,7 +47,7 @@ def add_task(data):
     with open(filename, 'r') as file:
         try:
             tasks_dict = json.load(file)
-        except:
+        except json.decoder.JSONDecodeError:
             id = 1
             tasks_dict[id] = data
         else:
@@ -68,12 +70,21 @@ def update_task(id, data):
         try:
             tasks_dict = json.load(file)
         except:
-            pass
+            crush_program("You can't update the task because the to-do list is empty now.")
         else:
-            tasks_dict[id] = data
+            if id in tasks_dict.keys():
+                key_exists = True
+            else:
+                key_exists = False
+            
+            if key_exists:
+                tasks_dict[id] = data
+            else:
+                crush_program("You can't update this task because it's not on the to-do list.")
 
     with open(filename, 'w') as file:
         json.dump(tasks_dict, file)
+
 
 def main():
     """Main function."""
@@ -83,33 +94,36 @@ def main():
     match len(parts):
         case 1: 
             command = parts[0]
+            id, description = None
         case 2:
             try:
                 int(parts[1])
             except:
                 command = parts[0]
+                id = None
                 description = parts[1]
             else:
                 command = parts[0]
                 id = parts[1]
+                description = None
         case 3:
             command = parts[0]
             id = parts[1]
             description = parts[2]
 
-    try:
-        match command.lower():
-            case "add":
-                try:
-                    add_task(description)
-                except:
-                    crush_program("Invalid argument for \"add\" command.")
-            case "delete":
-                pass
-            case "update":
+    match command:
+        case "add":
+            if description:
+                add_task(description)
+            elif id:
+                crush_program("Incorrect arguments for \"add\" command.")
+        case "delete":
+            pass
+        case "update":
+            if id and description:
                 update_task(id, description)
-    except:
-        crush_program("Incorrect syntax for entering command.")
+            else:
+                crush_program("Incorrect arguments for \"update\" command.")
 
 if __name__ == "__main__":
     main()
