@@ -49,10 +49,10 @@ def add_task(data):
             tasks_dict = json.load(file)
         except json.decoder.JSONDecodeError:
             id = 1
-            tasks_dict[id] = data
+            tasks_dict[id] = [data, "todo"]
         else:
             id = len(tasks_dict) + 1
-            tasks_dict[id] = data
+            tasks_dict[id] = [data, "todo"]
 
     with open(filename, 'w') as file:
         json.dump(tasks_dict, file)
@@ -64,7 +64,7 @@ def delete_task(id):
     with open(filename, 'r') as file:
         try:
             tasks_dict = json.load(file)
-        except:
+        except json.decoder.JSONDecodeError:
             crush_program("You can't delete the task because the to-do list is empty now.")
         else:
             if id in tasks_dict.keys():
@@ -80,13 +80,14 @@ def delete_task(id):
     with open(filename, 'w') as file:
         json.dump(tasks_dict, file)
 
+
 def update_task(id, data):
     """Function update a current task to our dictionary."""
     tasks_dict = {}
     with open(filename, 'r') as file:
         try:
             tasks_dict = json.load(file)
-        except:
+        except json.decoder.JSONDecodeError:
             crush_program("You can't update the task because the to-do list is empty now.")
         else:
             if id in tasks_dict.keys():
@@ -99,6 +100,28 @@ def update_task(id, data):
             else:
                 crush_program("You can't update this task because it's not on the to-do list.")
 
+    with open(filename, 'w') as file:
+        json.dump(tasks_dict, file)
+
+
+def update_status(id, status):
+    tasks_dict = {}
+    with open(filename, 'r') as file:
+        try:
+            tasks_dict = json.load(file)
+        except json.decoder.JSONDecodeError:
+            crush_program("You can't mark this task because the to-do list is empty now.")
+        else:
+            if id in tasks_dict.keys():
+                key_exists = True
+            else:
+                key_exists = False
+            
+            if key_exists:
+                tasks_dict[id][1] = status
+            else:
+                 crush_program("You can't mark this task because it's not on the to-do list.")
+    
     with open(filename, 'w') as file:
         json.dump(tasks_dict, file)
 
@@ -128,7 +151,7 @@ def main():
             id = parts[1]
             description = parts[2]
 
-    match command:
+    match command.lower():
         case "add":
             if description:
                 add_task(description)
@@ -144,6 +167,18 @@ def main():
                 update_task(id, description)
             else:
                 crush_program("Incorrect arguments for \"update\" command.")
+        case "mark-in-progress":
+            if id:
+                status = "in-progress"
+                update_status(id, status)
+            else:
+                crush_program("Incorrect arguments for \"mark-in-progress\" command.")
+        case "mark-done":
+            if id:
+                status = "done"
+                update_status(id, status)
+            else:
+                crush_program("Incorrect arguments for \"mark-done\" command.")
 
 if __name__ == "__main__":
     main()
