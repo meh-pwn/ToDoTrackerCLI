@@ -60,8 +60,25 @@ def add_task(data):
 
 def delete_task(id):
     """Function delete a task to our dictionary."""
-    pass
+    tasks_dict = {}
+    with open(filename, 'r') as file:
+        try:
+            tasks_dict = json.load(file)
+        except:
+            crush_program("You can't delete the task because the to-do list is empty now.")
+        else:
+            if id in tasks_dict.keys():
+                key_exists = True
+            else:
+                key_exists = False
+            
+            if key_exists:
+                tasks_dict.pop(id)
+            else:
+                crush_program("You can't delete this task because it's not on the to-do list.")
 
+    with open(filename, 'w') as file:
+        json.dump(tasks_dict, file)
 
 def update_task(id, data):
     """Function update a current task to our dictionary."""
@@ -118,7 +135,10 @@ def main():
             elif id:
                 crush_program("Incorrect arguments for \"add\" command.")
         case "delete":
-            pass
+            if id:
+                delete_task(id)
+            else:
+                crush_program("Incorrect arguments for \"delete\" command.")
         case "update":
             if id and description:
                 update_task(id, description)
