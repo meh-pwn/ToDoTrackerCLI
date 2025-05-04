@@ -2,6 +2,26 @@ import json
 from datetime import datetime
 filename = "users_task.json"
 
+# ANSI-colors
+COLOR_RESET = "\033[0m"
+COLORS = {
+    'green': "\033[32m",
+    'yellow': "\033[33m",
+    'blue': "\033[34m",
+    'white': "\033[37m"
+}
+
+STATUS_COLORS = {
+    'todo': COLORS['yellow'],
+    'in-progress': COLORS['blue'],
+    'done': COLORS['green']
+}
+
+def get_colored_status(status):
+    """Returns the color status."""
+    color_code = STATUS_COLORS.get(status, COLORS['white'])
+    return f"{color_code}{status}{COLOR_RESET}"
+
 
 def check_file(filename):
     """The function checks if a file exists in a directory and creates it otherwise."""
@@ -143,12 +163,20 @@ def show_full_list():
             crush_program("You can't see this list because the to-do list is empty now.")
         else:
             print("\n")
-            print(f"{'ID':<3}|{'Task':<20}|{'Status':<12}|{'Created':<20}|{'Updated':<19}")
-            print("-" * 80)
+            print(f"{'ID':<3} | {'Task':<20} | {'Status':<12} | {'Created':<20} | {'Updated':<19}")
+            print("-" * 85)
             for key, value in tasks_dict.items():
+                status = get_colored_status(value[1])
                 created_at = value[2]
-                updated_at = value[3]
-                print(f"{key:<3}|{value[0]:<20}|{value[1]:<12}|{created_at:<20}|{updated_at:<19}")
+                updated_at = value[3] 
+                line = (
+                    f"{key:<3} | "
+                    f"{value[0]:<20} | "
+                    f"{status:<{12 + len(status) - len(value[1])}} | " 
+                    f"{created_at:<20} | "
+                    f"{updated_at:<19}"
+                )
+                print(line)
             print("\n")
 
 
@@ -166,14 +194,22 @@ def show_done_list():
                  print("Nothing to display.")
             else:
                 print("\n")
-                print(f"{'ID':<3}|{'Task':<20}|{'Status':<12}|{'Created':<20}|{'Updated':<19}")
-                print("-" * 80)
+                print(f"{'ID':<3} | {'Task':<20} | {'Status':<12} | {'Created':<20} | {'Updated':<19}")
+                print("-" * 85)
                 for key, value in ((k, v) for k, v in tasks_dict.items() if v[1] == "done"):
+                    status = get_colored_status(value[1])
                     created_at = value[2]
                     updated_at = value[3]
-                    print(f"{key:<3}|{value[0]:<20}|{value[1]:<12}|{created_at:<20}|{updated_at:<19}")
-                print("\n")
-                    
+                    line = (
+                    f"{key:<3} | "
+                    f"{value[0]:<20} | "
+                    f"{status:<{12 + len(status) - len(value[1])}} | " 
+                    f"{created_at:<20} | "
+                    f"{updated_at:<19}"
+                )
+                print(line)
+            print("\n")
+                 
             
 def show_progress_list():
     """The function displays a list of in-progress tasks."""
@@ -189,14 +225,22 @@ def show_progress_list():
                  print("Nothing to display.")
             else:
                 print("\n")
-                print(f"{'ID':<3}|{'Task':<20}|{'Status':<12}|{'Created':<20}|{'Updated':<19}")
-                print("-" * 80)
+                print(f"{'ID':<3} | {'Task':<20} | {'Status':<12} | {'Created':<20} | {'Updated':<19}")
+                print("-" * 85)
                 for key, value in ((k, v) for k, v in tasks_dict.items() if v[1] == "in-progress"):
+                    status = get_colored_status(value[1])
                     created_at = value[2]
                     updated_at = value[3]
-                    print(f"{key:<3}|{value[0]:<20}|{value[1]:<12}|{created_at:<20}|{updated_at:<19}")
-                print("\n")
-
+                    line = (
+                    f"{key:<3} | "
+                    f"{value[0]:<20} | "
+                    f"{status:<{12 + len(status) - len(value[1])}} | " 
+                    f"{created_at:<20} | "
+                    f"{updated_at:<19}"
+                )
+                print(line)
+            print("\n")
+                 
 
 def show_todo_list():
     """The function displays a list of todo tasks."""
@@ -212,14 +256,22 @@ def show_todo_list():
                  print("Nothing to display.")
             else:
                 print("\n")
-                print(f"{'ID':<3}|{'Task':<20}|{'Status':<12}|{'Created':<20}|{'Updated':<19}")
-                print("-" * 80)
+                print(f"{'ID':<3} | {'Task':<20} | {'Status':<12} | {'Created':<20} | {'Updated':<19}")
+                print("-" * 85)
                 for key, value in ((k, v) for k, v in tasks_dict.items() if v[1] == "todo"):
+                    status = get_colored_status(value[1])
                     created_at = value[2]
                     updated_at = value[3]
-                    print(f"{key:<3}|{value[0]:<20}|{value[1]:<12}|{created_at:<20}|{updated_at:<19}")
-                print("\n")
-
+                    line = (
+                    f"{key:<3} | "
+                    f"{value[0]:<20} | "
+                    f"{status:<{12 + len(status) - len(value[1])}} | " 
+                    f"{created_at:<20} | "
+                    f"{updated_at:<19}"
+                )
+                print(line)
+            print("\n")
+                 
 
 def main():
     """Main function."""
