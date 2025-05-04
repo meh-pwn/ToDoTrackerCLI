@@ -51,11 +51,11 @@ def add_task(data):
         except json.decoder.JSONDecodeError:
             id = 1
             created_at = datetime.now().strftime('%d.%m.%Y %H:%M:%S')
-            tasks_dict[id] = [data, "todo", created_at, " "]
+            tasks_dict[id] = [data, "todo", created_at, "N/A"]
         else:
             id = len(tasks_dict) + 1
             created_at = datetime.now().strftime('%d.%m.%Y %H:%M:%S')
-            tasks_dict[id] = [data, "todo", created_at, " "]
+            tasks_dict[id] = [data, "todo", created_at, "N/A"]
 
     with open(filename, 'w') as file:
         json.dump(tasks_dict, file)
@@ -142,8 +142,14 @@ def show_full_list():
         except json.decoder.JSONDecodeError:
             crush_program("You can't see this list because the to-do list is empty now.")
         else:
+            print("\n")
+            print(f"{'ID':<3}|{'Task':<20}|{'Status':<12}|{'Created':<20}|{'Updated':<19}")
+            print("-" * 80)
             for key, value in tasks_dict.items():
-                print(key, value[0], value[1], value[2], value[3])
+                created_at = value[2]
+                updated_at = value[3]
+                print(f"{key:<3}|{value[0]:<20}|{value[1]:<12}|{created_at:<20}|{updated_at:<19}")
+            print("\n")
 
 
 def show_done_list():
@@ -155,15 +161,20 @@ def show_done_list():
         except json.decoder.JSONDecodeError:
             crush_program("You can't see this list because the to-do list is empty now.")
         else:
-            found = False
-            for key, value in ((k, v) for k, v in tasks_dict.items() if v[1] == "done"):
-                print(key, value[0], value[1], value[2], value[3])
-                found = True
+            has_done_tasks = any(value[1] == "done" for value in tasks_dict.values())
+            if not has_done_tasks:
+                 print("Nothing to display.")
+            else:
+                print("\n")
+                print(f"{'ID':<3}|{'Task':<20}|{'Status':<12}|{'Created':<20}|{'Updated':<19}")
+                print("-" * 80)
+                for key, value in ((k, v) for k, v in tasks_dict.items() if v[1] == "done"):
+                    created_at = value[2]
+                    updated_at = value[3]
+                    print(f"{key:<3}|{value[0]:<20}|{value[1]:<12}|{created_at:<20}|{updated_at:<19}")
+                print("\n")
+                    
             
-            if found == False:
-                print("Nothing to display.")
-
-
 def show_progress_list():
     """The function displays a list of in-progress tasks."""
     tasks_dict = {}
@@ -173,13 +184,18 @@ def show_progress_list():
         except json.decoder.JSONDecodeError:
             crush_program("You can't see this list because the to-do list is empty now.")
         else:
-            found = False
-            for key, value in ((k, v) for k, v in tasks_dict.items() if v[1] == "in-progress"):
-                print(key, value[0], value[1], value[2], value[3])
-                found = True
-            
-            if found == False:
-                print("Nothing to display.")
+            has_progress_tasks = any(value[1] == "in-progress" for value in tasks_dict.values())
+            if not has_progress_tasks:
+                 print("Nothing to display.")
+            else:
+                print("\n")
+                print(f"{'ID':<3}|{'Task':<20}|{'Status':<12}|{'Created':<20}|{'Updated':<19}")
+                print("-" * 80)
+                for key, value in ((k, v) for k, v in tasks_dict.items() if v[1] == "in-progress"):
+                    created_at = value[2]
+                    updated_at = value[3]
+                    print(f"{key:<3}|{value[0]:<20}|{value[1]:<12}|{created_at:<20}|{updated_at:<19}")
+                print("\n")
 
 
 def show_todo_list():
@@ -191,13 +207,18 @@ def show_todo_list():
         except json.decoder.JSONDecodeError:
             crush_program("You can't see this list because the to-do list is empty now.")
         else:
-            found = False
-            for key, value in ((k, v) for k, v in tasks_dict.items() if v[1] == "todo"):
-                print(key, value[0], value[1], value[2], value[3])
-                found = True
-            
-            if found == False:
-                print("Nothing to display.")
+            has_todo_tasks = any(value[1] == "todo" for value in tasks_dict.values())
+            if not has_todo_tasks:
+                 print("Nothing to display.")
+            else:
+                print("\n")
+                print(f"{'ID':<3}|{'Task':<20}|{'Status':<12}|{'Created':<20}|{'Updated':<19}")
+                print("-" * 80)
+                for key, value in ((k, v) for k, v in tasks_dict.items() if v[1] == "todo"):
+                    created_at = value[2]
+                    updated_at = value[3]
+                    print(f"{key:<3}|{value[0]:<20}|{value[1]:<12}|{created_at:<20}|{updated_at:<19}")
+                print("\n")
 
 
 def main():
