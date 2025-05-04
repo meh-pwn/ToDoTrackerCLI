@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 filename = "users_task.json"
 
 
@@ -12,12 +13,12 @@ def check_file(filename):
 
 
 def crush_program(reason):
-    """Function terminates the program when an error occurs."""
+    """The function terminates the program when an error occurs."""
     raise SystemExit(f"Error: {reason}")
     
 
 def parse_input(users_input):
-    """Function splits a string into parts, taking into account spaces and quotation marks."""
+    """The function splits a string into parts, taking into account spaces and quotation marks."""
     parts = []
     current_part = []
     in_quotes = False
@@ -37,29 +38,31 @@ def parse_input(users_input):
     if current_part:
         parts.append(''.join(current_part))
         current_part = []
-
+ 
     return parts
 
 
 def add_task(data):
-    """Function adds a new task to our dictionary."""
+    """The function adds a new task to our dictionary."""
     tasks_dict = {}
     with open(filename, 'r') as file:
         try:
             tasks_dict = json.load(file)
         except json.decoder.JSONDecodeError:
             id = 1
-            tasks_dict[id] = [data, "todo"]
+            created_at = datetime.now().strftime('%d.%m.%Y %H:%M:%S')
+            tasks_dict[id] = [data, "todo", created_at, " "]
         else:
             id = len(tasks_dict) + 1
-            tasks_dict[id] = [data, "todo"]
+            created_at = datetime.now().strftime('%d.%m.%Y %H:%M:%S')
+            tasks_dict[id] = [data, "todo", created_at, " "]
 
     with open(filename, 'w') as file:
         json.dump(tasks_dict, file)
 
 
 def delete_task(id):
-    """Function delete a task to our dictionary."""
+    """The function delete a task to our dictionary."""
     tasks_dict = {}
     with open(filename, 'r') as file:
         try:
@@ -82,7 +85,7 @@ def delete_task(id):
 
 
 def update_task(id, data):
-    """Function update a current task to our dictionary."""
+    """The function update a current task to our dictionary."""
     tasks_dict = {}
     with open(filename, 'r') as file:
         try:
@@ -96,7 +99,10 @@ def update_task(id, data):
                 key_exists = False
             
             if key_exists:
-                tasks_dict[id] = data
+                status = tasks_dict[id][1]
+                created_at = tasks_dict[id][2]
+                updated_at = datetime.now().strftime('%d.%m.%Y %H:%M:%S')
+                tasks_dict[id] = [data, status, created_at, updated_at]
             else:
                 crush_program("You can't update this task because it's not on the to-do list.")
 
@@ -105,6 +111,7 @@ def update_task(id, data):
 
 
 def update_status(id, status):
+    """The function update a current status for task to our dictionary."""
     tasks_dict = {}
     with open(filename, 'r') as file:
         try:
@@ -126,6 +133,73 @@ def update_status(id, status):
         json.dump(tasks_dict, file)
 
 
+def show_full_list():
+    """The function displays a list of all tasks."""
+    tasks_dict = {}
+    with open(filename, 'r') as file:
+        try:
+            tasks_dict = json.load(file)
+        except json.decoder.JSONDecodeError:
+            crush_program("You can't see this list because the to-do list is empty now.")
+        else:
+            for key, value in tasks_dict.items():
+                print(key, value[0], value[1], value[2], value[3])
+
+
+def show_done_list():
+    """The function displays a list of done tasks."""
+    tasks_dict = {}
+    with open(filename, 'r') as file:
+        try:
+            tasks_dict = json.load(file)
+        except json.decoder.JSONDecodeError:
+            crush_program("You can't see this list because the to-do list is empty now.")
+        else:
+            found = False
+            for key, value in ((k, v) for k, v in tasks_dict.items() if v[1] == "done"):
+                print(key, value[0], value[1], value[2], value[3])
+                found = True
+            
+            if found == False:
+                print("Nothing to display.")
+
+
+def show_progress_list():
+    """The function displays a list of in-progress tasks."""
+    tasks_dict = {}
+    with open(filename, 'r') as file:
+        try:
+            tasks_dict = json.load(file)
+        except json.decoder.JSONDecodeError:
+            crush_program("You can't see this list because the to-do list is empty now.")
+        else:
+            found = False
+            for key, value in ((k, v) for k, v in tasks_dict.items() if v[1] == "in-progress"):
+                print(key, value[0], value[1], value[2], value[3])
+                found = True
+            
+            if found == False:
+                print("Nothing to display.")
+
+
+def show_todo_list():
+    """The function displays a list of todo tasks."""
+    tasks_dict = {}
+    with open(filename, 'r') as file:
+        try:
+            tasks_dict = json.load(file)
+        except json.decoder.JSONDecodeError:
+            crush_program("You can't see this list because the to-do list is empty now.")
+        else:
+            found = False
+            for key, value in ((k, v) for k, v in tasks_dict.items() if v[1] == "todo"):
+                print(key, value[0], value[1], value[2], value[3])
+                found = True
+            
+            if found == False:
+                print("Nothing to display.")
+
+
 def main():
     """Main function."""
     check_file(filename)
@@ -134,7 +208,7 @@ def main():
     match len(parts):
         case 1: 
             command = parts[0]
-            id, description = None
+            id, description = None, None
         case 2:
             try:
                 int(parts[1])
@@ -179,6 +253,15 @@ def main():
                 update_status(id, status)
             else:
                 crush_program("Incorrect arguments for \"mark-done\" command.")
+        case "list":
+            if not description:
+                show_full_list()
+            elif description == "done":
+                show_done_list()
+            elif description == "in-progress":
+                show_progress_list()
+            elif description == "todo":
+                show_todo_list()
 
 if __name__ == "__main__":
     main()
