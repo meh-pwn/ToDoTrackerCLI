@@ -97,6 +97,15 @@ def delete_task(id):
             
             if key_exists:
                 tasks_dict.pop(id)
+
+                values = []
+                for value in tasks_dict.values():
+                    values.append(value)
+
+                tasks_dict = {}
+                for key in range(1, len(values) + 1):
+                    tasks_dict[key] = values[key - 1]
+                    
             else:
                 crush_program("You can't delete this task because it's not on the to-do list.")
 
@@ -162,17 +171,23 @@ def show_full_list():
         except json.decoder.JSONDecodeError:
             crush_program("You can't see this list because the to-do list is empty now.")
         else:
+
+            max_task_len = max(len(value[0]) for value in tasks_dict.values())
+            max_status_len = max(len(value[1]) for value in tasks_dict.values())
+
             print("\n")
-            print(f"{'ID':<3} | {'Task':<20} | {'Status':<12} | {'Created':<20} | {'Updated':<19}")
-            print("-" * 85)
+            header = f"{'ID':<3} | {'Task':<{max_task_len}} | {'Status':<{max_status_len}} | {'Created':<20} | {'Updated':<19}"
+            print(header)
+            print("-" * len(header))
+
             for key, value in tasks_dict.items():
                 status = get_colored_status(value[1])
                 created_at = value[2]
                 updated_at = value[3] 
                 line = (
                     f"{key:<3} | "
-                    f"{value[0]:<20} | "
-                    f"{status:<{12 + len(status) - len(value[1])}} | " 
+                    f"{value[0]:<{max_task_len}} | "
+                    f"{status:<{max_status_len + len(status) - len(value[1])}} | " 
                     f"{created_at:<20} | "
                     f"{updated_at:<19}"
                 )
@@ -193,23 +208,28 @@ def show_done_list():
             if not has_done_tasks:
                  print("Nothing to display.")
             else:
+                max_task_len = max(len(value[0]) for value in tasks_dict.values())
+                max_status_len = max(len(value[1]) for value in tasks_dict.values())
+
                 print("\n")
-                print(f"{'ID':<3} | {'Task':<20} | {'Status':<12} | {'Created':<20} | {'Updated':<19}")
-                print("-" * 85)
+                header = f"{'ID':<3} | {'Task':<{max_task_len}} | {'Status':<{max_status_len}} | {'Created':<20} | {'Updated':<19}"
+                print(header)
+                print("-" * len(header))
+
                 for key, value in ((k, v) for k, v in tasks_dict.items() if v[1] == "done"):
                     status = get_colored_status(value[1])
                     created_at = value[2]
-                    updated_at = value[3]
+                    updated_at = value[3] 
                     line = (
-                    f"{key:<3} | "
-                    f"{value[0]:<20} | "
-                    f"{status:<{12 + len(status) - len(value[1])}} | " 
-                    f"{created_at:<20} | "
-                    f"{updated_at:<19}"
-                )
-                print(line)
-            print("\n")
-                 
+                        f"{key:<3} | "
+                        f"{value[0]:<{max_task_len}} | "
+                        f"{status:<{max_status_len + len(status) - len(value[1])}} | " 
+                        f"{created_at:<20} | "
+                        f"{updated_at:<19}"
+                    )
+                    print(line)
+                print("\n")
+                    
             
 def show_progress_list():
     """The function displays a list of in-progress tasks."""
@@ -224,22 +244,27 @@ def show_progress_list():
             if not has_progress_tasks:
                  print("Nothing to display.")
             else:
+                max_task_len = max(len(value[0]) for value in tasks_dict.values())
+                max_status_len = max(len(value[1]) for value in tasks_dict.values())
+
                 print("\n")
-                print(f"{'ID':<3} | {'Task':<20} | {'Status':<12} | {'Created':<20} | {'Updated':<19}")
-                print("-" * 85)
+                header = f"{'ID':<3} | {'Task':<{max_task_len}} | {'Status':<{max_status_len}} | {'Created':<20} | {'Updated':<19}"
+                print(header)
+                print("-" * len(header))
+
                 for key, value in ((k, v) for k, v in tasks_dict.items() if v[1] == "in-progress"):
                     status = get_colored_status(value[1])
                     created_at = value[2]
-                    updated_at = value[3]
+                    updated_at = value[3] 
                     line = (
-                    f"{key:<3} | "
-                    f"{value[0]:<20} | "
-                    f"{status:<{12 + len(status) - len(value[1])}} | " 
-                    f"{created_at:<20} | "
-                    f"{updated_at:<19}"
-                )
-                print(line)
-            print("\n")
+                        f"{key:<3} | "
+                        f"{value[0]:<{max_task_len}} | "
+                        f"{status:<{max_status_len + len(status) - len(value[1])}} | " 
+                        f"{created_at:<20} | "
+                        f"{updated_at:<19}"
+                    )
+                    print(line)
+                print("\n")
                  
 
 def show_todo_list():
@@ -255,22 +280,27 @@ def show_todo_list():
             if not has_todo_tasks:
                  print("Nothing to display.")
             else:
+                max_task_len = max(len(value[0]) for value in tasks_dict.values())
+                max_status_len = max(len(value[1]) for value in tasks_dict.values())
+
                 print("\n")
-                print(f"{'ID':<3} | {'Task':<20} | {'Status':<12} | {'Created':<20} | {'Updated':<19}")
-                print("-" * 85)
+                header = f"{'ID':<3} | {'Task':<{max_task_len}} | {'Status':<{max_status_len}} | {'Created':<20} | {'Updated':<19}"
+                print(header)
+                print("-" * len(header))
+
                 for key, value in ((k, v) for k, v in tasks_dict.items() if v[1] == "todo"):
                     status = get_colored_status(value[1])
                     created_at = value[2]
-                    updated_at = value[3]
+                    updated_at = value[3] 
                     line = (
-                    f"{key:<3} | "
-                    f"{value[0]:<20} | "
-                    f"{status:<{12 + len(status) - len(value[1])}} | " 
-                    f"{created_at:<20} | "
-                    f"{updated_at:<19}"
-                )
-                print(line)
-            print("\n")
+                        f"{key:<3} | "
+                        f"{value[0]:<{max_task_len}} | "
+                        f"{status:<{max_status_len + len(status) - len(value[1])}} | " 
+                        f"{created_at:<20} | "
+                        f"{updated_at:<19}"
+                    )
+                    print(line)
+                print("\n")
                  
 
 def main():
@@ -335,6 +365,8 @@ def main():
                 show_progress_list()
             elif description == "todo":
                 show_todo_list()
+        case _:
+            crush_program("Wrong command. Please, try again.")
 
 if __name__ == "__main__":
     main()
