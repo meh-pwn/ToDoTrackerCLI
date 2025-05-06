@@ -1,5 +1,10 @@
 # TASKER: CLI task manager app
 
+
+## Preview
+
+![tasker_example](assets/mark_progress.gif)
+
 ## Description
 **TASKER** - a simple and convenient Python console program for maintaining trackers of habits, goals or tasks. The program allows you to create, edit, view and delete trackers, as well as track daily marks for each of them.
 
@@ -12,13 +17,34 @@
 - list all tasks that are in progress
 - see when you created the task and when you updated it
 
+## Project structure
+**task_manager.py**:
+    main:
+    - add_task(): Adds new tasks with automatic ID generation
+    - delete_task(): Removes tasks and reindexes remaining ones
+    - update_task(): Modifies task descriptions
+    - update_status(): Changes task status
+    helper functions:
+    - parse_input(): Handles complex command parsing including quoted strings
+    - get_colored_status(): Provides ANSI color codes for status display
+    - check_file(): Ensures data file exists
+    - crush_program(): Handles error termination
+    user_interface:
+    - interactive command prompt (tasker>>)
+    - comprehensive help system (help command)
+    - clear error messages for invalid inputs
+
+**test_tracker.py**: contains tests for the functions defined in task_manager.py.
+
 ## Installation and Usage
 
 **Installation: can be done via pip**
 1. Make sure you have Python 3.6 or later installed.
 2. Clone the repository:
 
-<pre>'''bash pip install git+https://github.com/meh-pwn/ToDoTrackerCLI.git'''</pre>
+```bash
+pip install git+https://github.com/meh-pwn/ToDoTrackerCLI.git
+```
 
 (It is recommended to install in virtual mode)
 
@@ -28,20 +54,118 @@
 
 - add task
 
-![add_task](assets/add_task.gif)
+```bash
+tasker>> add "Buy milk"
+tasker>> list
+
+
+ID  | Task     | Status       | Created              | Updated            
+--------------------------------------------------------------------------
+1   | Buy milk | todo         | 06.05.2025 18:53:08  | N/A  
+```
 
 - update task
 
-![update_task](assets/update_task.gif)
+```bash
+tasker>> add "Old task"
+tasker>> update 1 "New task"
+tasker>> list
+
+
+ID  | Task     | Status       | Created              | Updated            
+--------------------------------------------------------------------------
+1   | New task | todo         | 06.05.2025 18:54:27  | 06.05.2025 18:54:42
+```
 
 - delete task
 
-![delete_task](assets/delete_task.gif)
+```bash
+ID  | Task        | Status       | Created              | Updated            
+-----------------------------------------------------------------------------
+1   | First task  | todo         | 06.05.2025 18:56:04  | N/A                
+2   | Second task | todo         | 06.05.2025 18:56:12  | N/A                
+
+
+tasker>> delete 1
+tasker>> list
+
+
+ID  | Task        | Status       | Created              | Updated            
+-----------------------------------------------------------------------------
+1   | Second task | todo         | 06.05.2025 18:56:12  | N/A                
+```
 
 - mark task as "in progress"
 
-![mark_in_progress](assets/mark_progress.gif)
+```bash
+ID  | Task        | Status       | Created              | Updated            
+-----------------------------------------------------------------------------
+1   | First task  | todo         | 06.05.2025 18:57:21  | N/A                
+2   | Second task | todo         | 06.05.2025 18:57:31  | N/A                
+
+
+tasker>> mark-in-progress 2
+tasker>> list
+
+
+ID  | Task        | Status       | Created              | Updated            
+-----------------------------------------------------------------------------
+1   | First task  | todo         | 06.05.2025 18:57:21  | N/A                
+2   | Second task | in-progress  | 06.05.2025 18:57:31  | N/A                
+```
 
 - mark task as "done"
 
-![mark_done](assets/mark_done.gif)
+```bash
+ID  | Task        | Status       | Created              | Updated            
+-----------------------------------------------------------------------------
+1   | First task  | todo         | 06.05.2025 18:57:21  | N/A                
+2   | Second task | in-progress  | 06.05.2025 18:57:31  | N/A                
+
+
+tasker>> mark-done 1
+tasker>> list
+
+
+ID  | Task        | Status       | Created              | Updated            
+-----------------------------------------------------------------------------
+1   | First task  | done         | 06.05.2025 18:57:21  | N/A                
+2   | Second task | in-progress  | 06.05.2025 18:57:31  | N/A  
+```
+
+- list / list in-progress / list done / list todo
+
+```bash
+tasker>> list
+
+
+ID  | Task        | Status       | Created              | Updated            
+-----------------------------------------------------------------------------
+1   | First task  | done         | 06.05.2025 18:57:21  | N/A                
+2   | Second task | in-progress  | 06.05.2025 18:57:31  | N/A                
+3   | Third task  | todo         | 06.05.2025 19:04:40  | N/A                
+
+
+tasker>> list in-progress
+
+
+ID  | Task        | Status       | Created              | Updated            
+-----------------------------------------------------------------------------
+2   | Second task | in-progress  | 06.05.2025 18:57:31  | N/A                
+
+
+tasker>> list done
+
+
+ID  | Task        | Status       | Created              | Updated            
+-----------------------------------------------------------------------------
+1   | First task  | done         | 06.05.2025 18:57:21  | N/A                
+
+
+tasker>> list todo
+
+
+ID  | Task        | Status       | Created              | Updated            
+-----------------------------------------------------------------------------
+3   | Third task  | todo         | 06.05.2025 19:04:40  | N/A                 
+```
