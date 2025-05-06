@@ -7,10 +7,10 @@ setup(
     author="meh-pwn",
     author_email="andreeww027@gmail.com",
     url="https://github.com/meh-pwn/ToDoTrackerCLI.git",
-    py_modules=["tracker_manager"],
+    py_modules=["task_manager"],
     entry_points={
         "console_scripts": [
-            "tasker=tracker_manager:main",
+            "tasker=task_manager:main",
         ],
     },
     test_requires=[

@@ -1,7 +1,7 @@
 import pytest
 import json
 import os
-from tracker_manager import (add_task, delete_task, update_task, update_status,
+from task_manager import (add_task, delete_task, update_task, update_status,
                   parse_input)
 
 TEST_FILENAME = "test_user_tasks.json"
