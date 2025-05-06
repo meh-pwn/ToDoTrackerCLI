@@ -19,20 +19,22 @@
 
 ## Project structure
 **task_manager.py**:
-    main:
-    - add_task(): Adds new tasks with automatic ID generation
-    - delete_task(): Removes tasks and reindexes remaining ones
-    - update_task(): Modifies task descriptions
-    - update_status(): Changes task status
-    helper functions:
-    - parse_input(): Handles complex command parsing including quoted strings
-    - get_colored_status(): Provides ANSI color codes for status display
-    - check_file(): Ensures data file exists
-    - crush_program(): Handles error termination
-    user_interface:
-    - interactive command prompt (tasker>>)
-    - comprehensive help system (help command)
-    - clear error messages for invalid inputs
+## Main
+- **add_task()**: Adds new tasks with automatic ID generation  
+- **delete_task()**: Removes tasks and reindexes remaining ones  
+- **update_task()**: Modifies task descriptions  
+- **update_status()**: Changes task status  
+
+## Helper Functions
+- **parse_input()**: Handles complex command parsing including quoted strings  
+- **get_colored_status()**: Provides ANSI color codes for status display  
+- **check_file()**: Ensures data file exists  
+- **crush_program()**: Handles error termination  
+
+## User Interface
+- Interactive command prompt (`tasker>>`)  
+- Comprehensive help system (`help` command)  
+- Clear error messages for invalid inputs 
 
 **test_tracker.py**: contains tests for the functions defined in task_manager.py.
 
