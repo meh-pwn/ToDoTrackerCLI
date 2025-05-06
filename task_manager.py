@@ -172,6 +172,10 @@ def show_full_list(filename):
             crush_program("You can't see this list because the to-do list is empty now.")
         else:
 
+            if not tasks_dict:
+                print("Nothing to display.")
+                return
+
             max_task_len = max(len(value[0]) for value in tasks_dict.values())
 
             print("\n")
