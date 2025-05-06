@@ -1,6 +1,6 @@
 import json
 from datetime import datetime
-filename = "users_task.json"
+filename = "user_tasks.json"
 
 # ANSI-colors
 COLOR_RESET = "\033[0m"
@@ -62,7 +62,7 @@ def parse_input(users_input):
     return parts
 
 
-def add_task(data):
+def add_task(data, filename):
     """The function adds a new task to our dictionary."""
     tasks_dict = {}
     with open(filename, 'r') as file:
@@ -81,7 +81,7 @@ def add_task(data):
         json.dump(tasks_dict, file)
 
 
-def delete_task(id):
+def delete_task(id, filename):
     """The function delete a task to our dictionary."""
     tasks_dict = {}
     with open(filename, 'r') as file:
@@ -113,7 +113,7 @@ def delete_task(id):
         json.dump(tasks_dict, file)
 
 
-def update_task(id, data):
+def update_task(id, data, filename):
     """The function update a current task to our dictionary."""
     tasks_dict = {}
     with open(filename, 'r') as file:
@@ -139,7 +139,7 @@ def update_task(id, data):
         json.dump(tasks_dict, file)
 
 
-def update_status(id, status):
+def update_status(id, status, filename):
     """The function update a current status for task to our dictionary."""
     tasks_dict = {}
     with open(filename, 'r') as file:
@@ -162,7 +162,7 @@ def update_status(id, status):
         json.dump(tasks_dict, file)
 
 
-def show_full_list():
+def show_full_list(filename):
     """The function displays a list of all tasks."""
     tasks_dict = {}
     with open(filename, 'r') as file:
@@ -195,7 +195,7 @@ def show_full_list():
             print("\n")
 
 
-def show_done_list():
+def show_done_list(filename):
     """The function displays a list of done tasks."""
     tasks_dict = {}
     with open(filename, 'r') as file:
@@ -231,7 +231,7 @@ def show_done_list():
                 print("\n")
                     
             
-def show_progress_list():
+def show_progress_list(filename):
     """The function displays a list of in-progress tasks."""
     tasks_dict = {}
     with open(filename, 'r') as file:
@@ -267,7 +267,7 @@ def show_progress_list():
                 print("\n")
                  
 
-def show_todo_list():
+def show_todo_list(filename):
     """The function displays a list of todo tasks."""
     tasks_dict = {}
     with open(filename, 'r') as file:
@@ -327,44 +327,48 @@ def main():
             command = parts[0]
             id = parts[1]
             description = parts[2]
+        case _:
+            command = "error"
 
     match command.lower():
         case "add":
             if description:
-                add_task(description)
+                add_task(description, filename)
             elif id:
                 crush_program("Incorrect arguments for \"add\" command.")
         case "delete":
             if id:
-                delete_task(id)
+                delete_task(id, filename)
             else:
                 crush_program("Incorrect arguments for \"delete\" command.")
         case "update":
             if id and description:
-                update_task(id, description)
+                update_task(id, description, filename)
             else:
                 crush_program("Incorrect arguments for \"update\" command.")
         case "mark-in-progress":
             if id:
                 status = "in-progress"
-                update_status(id, status)
+                update_status(id, status, filename)
             else:
                 crush_program("Incorrect arguments for \"mark-in-progress\" command.")
         case "mark-done":
             if id:
                 status = "done"
-                update_status(id, status)
+                update_status(id, status, filename)
             else:
                 crush_program("Incorrect arguments for \"mark-done\" command.")
         case "list":
             if not description:
-                show_full_list()
+                show_full_list(filename)
             elif description == "done":
-                show_done_list()
+                show_done_list(filename)
             elif description == "in-progress":
-                show_progress_list()
+                show_progress_list(filename)
             elif description == "todo":
-                show_todo_list()
+                show_todo_list(filename)
+        case "error":
+            crush_program("Wrong command. Please, try again.")
         case _:
             crush_program("Wrong command. Please, try again.")
 
