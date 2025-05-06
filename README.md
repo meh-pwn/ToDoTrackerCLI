@@ -7,6 +7,8 @@
 
 ## Description
 **TASKER** - a simple and convenient Python console program for maintaining trackers of habits, goals or tasks. The program allows you to create, edit, view and delete trackers, as well as track daily marks for each of them.
+This is a project for 
+<pre> https://roadmap.sh/projects/task-tracker </pre>
 
 ## Features
 - add, update, and delete your tasks
@@ -170,10 +172,4 @@ tasker>> list todo
 ID  | Task        | Status       | Created              | Updated            
 -----------------------------------------------------------------------------
 3   | Third task  | todo         | 06.05.2025 19:04:40  | N/A                 
-```
-
-## URL
-
-```bash
-https://github.com/meh-pwn/ToDoTrackerCLI.git
 ```
