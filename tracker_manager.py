@@ -306,71 +306,98 @@ def show_todo_list(filename):
 def main():
     """Main function."""
     check_file(filename)
-    parts = parse_input(users_input=input())
+    print("Welcome to Tasker! Type 'help' to see available commands. Type 'exit' to quit.\n")
 
-    match len(parts):
-        case 1: 
-            command = parts[0]
-            id, description = None, None
-        case 2:
-            try:
-                int(parts[1])
-            except:
+    while True:
+        try:
+            users_input = input("tasker> ")
+        except (KeyboardInterrupt, EOFError):
+            print("\nExiting Tasker.")
+            break
+
+        if users_input.strip().lower() in {"exit", "quit"}:
+            print("Goodbye!")
+            break
+        if users_input.strip().lower() == "help":
+            print("""Available commands:
+                    1. add "task description"
+                    2. delete <id>
+                    3. update <id> "new task description"
+                    4. mark-in-progress <id>
+                    5. mark-done <id>
+                    6. list [all|done|in-progress|todo]
+                    7. exit / quit
+                """)
+            continue
+
+        parts = parse_input(users_input)
+
+        match len(parts):
+            case 1: 
                 command = parts[0]
-                id = None
-                description = parts[1]
-            else:
+                id, description = None, None
+            case 2:
+                try:
+                    int(parts[1])
+                except:
+                    command = parts[0]
+                    id = None
+                    description = parts[1]
+                else:
+                    command = parts[0]
+                    id = parts[1]
+                    description = None
+            case 3:
                 command = parts[0]
                 id = parts[1]
-                description = None
-        case 3:
-            command = parts[0]
-            id = parts[1]
-            description = parts[2]
-        case _:
-            command = "error"
+                description = parts[2]
+            case _:
+                command = "error"
 
-    match command.lower():
-        case "add":
-            if description:
-                add_task(description, filename)
-            elif id:
-                crush_program("Incorrect arguments for \"add\" command.")
-        case "delete":
-            if id:
-                delete_task(id, filename)
-            else:
-                crush_program("Incorrect arguments for \"delete\" command.")
-        case "update":
-            if id and description:
-                update_task(id, description, filename)
-            else:
-                crush_program("Incorrect arguments for \"update\" command.")
-        case "mark-in-progress":
-            if id:
-                status = "in-progress"
-                update_status(id, status, filename)
-            else:
-                crush_program("Incorrect arguments for \"mark-in-progress\" command.")
-        case "mark-done":
-            if id:
-                status = "done"
-                update_status(id, status, filename)
-            else:
-                crush_program("Incorrect arguments for \"mark-done\" command.")
-        case "list":
-            if not description:
-                show_full_list(filename)
-            elif description == "done":
-                show_done_list(filename)
-            elif description == "in-progress":
-                show_progress_list(filename)
-            elif description == "todo":
-                show_todo_list(filename)
-        case "error":
-            crush_program("Wrong command. Please, try again.")
-        case _:
-            crush_program("Wrong command. Please, try again.")
+        match command.lower():
+            case "add":
+                if description:
+                    add_task(description, filename)
+                elif id:
+                    crush_program("Incorrect arguments for \"add\" command.")
+            case "delete":
+                if id:
+                    delete_task(id, filename)
+                else:
+                    crush_program("Incorrect arguments for \"delete\" command.")
+            case "update":
+                if id and description:
+                    update_task(id, description, filename)
+                else:
+                    crush_program("Incorrect arguments for \"update\" command.")
+            case "mark-in-progress":
+                if id:
+                    status = "in-progress"
+                    update_status(id, status, filename)
+                else:
+                    crush_program("Incorrect arguments for \"mark-in-progress\" command.")
+            case "mark-done":
+                if id:
+                    status = "done"
+                    update_status(id, status, filename)
+                else:
+                    crush_program("Incorrect arguments for \"mark-done\" command.")
+            case "list":
+                if not description or description == "all":
+                    show_full_list(filename)
+                elif description == "done":
+                    show_done_list(filename)
+                elif description == "in-progress":
+                    show_progress_list(filename)
+                elif description == "todo":
+                    show_todo_list(filename)
+                else:
+                    crush_program("Unknown list filter.")
+            case "error":
+                crush_program("Wrong command. Please, try again.")
+            case _:
+                crush_program("Wrong command. Please, try again.")
+
 
 if __name__ == "__main__":
     main()
